@@ -5,6 +5,7 @@ using InfinityRunner.Collectibles;
 
 namespace InfinityRunner.Character
 {
+    [RequireComponent(typeof(CharacterController))]
     public class PlayerCollision : MonoBehaviour
     {
         [SerializeField] private PlayerMovement movement;
@@ -25,17 +26,36 @@ namespace InfinityRunner.Character
             if (GameManager.Instance == null || !GameManager.Instance.IsPlaying)
                 return;
 
-            Obstacle obstacle = other.GetComponent<Obstacle>() ?? other.GetComponentInParent<Obstacle>();
-            if (obstacle != null)
-            {
-                obstacle.Hit(movement);
-                return;
-            }
+            TryCollect(other);
+            TryHitObstacle(other);
+        }
 
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            if (GameManager.Instance == null || !GameManager.Instance.IsPlaying)
+                return;
+
+            if (hit.collider == null)
+                return;
+
+            TryHitObstacle(hit.collider);
+        }
+
+        private void TryCollect(Collider other)
+        {
             Collectible collectible = other.GetComponent<Collectible>() ?? other.GetComponentInParent<Collectible>();
             if (collectible != null)
             {
                 collectible.Collect(movement);
+            }
+        }
+
+        private void TryHitObstacle(Collider other)
+        {
+            Obstacle obstacle = other.GetComponent<Obstacle>() ?? other.GetComponentInParent<Obstacle>();
+            if (obstacle != null)
+            {
+                obstacle.Hit(movement);
             }
         }
     }

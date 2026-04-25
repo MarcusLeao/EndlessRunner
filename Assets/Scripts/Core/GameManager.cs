@@ -66,7 +66,6 @@ namespace InfinityRunner.Core
         public void GameOver()
         {
             if (CurrentState == GameState.GameOver) return;
-
             Time.timeScale = 1f;
             SetState(GameState.GameOver);
         }

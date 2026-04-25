@@ -9,14 +9,18 @@ namespace InfinityRunner.Systems
     {
         public static ScoreManager Instance { get; private set; }
 
+        private const string BestScoreKey = "BestScore";
+
         [SerializeField] private Transform player;
         [SerializeField] private RunConfig config;
 
         public float DistanceTravelled { get; private set; }
         public int CoinsCollected { get; private set; }
         public int CurrentScore { get; private set; }
+        public int BestScore { get; private set; }
 
         public event Action<int, int, float> OnScoreChanged;
+        public event Action<int> OnBestScoreChanged;
 
         private float _lastPlayerZ;
 
@@ -29,6 +33,7 @@ namespace InfinityRunner.Systems
             }
 
             Instance = this;
+            BestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
         }
 
         private void Start()
@@ -36,7 +41,16 @@ namespace InfinityRunner.Systems
             if (player != null)
                 _lastPlayerZ = player.position.z;
 
+            if (GameManager.Instance != null)
+                GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
+
             RecalculateScore();
+        }
+
+        private void OnDestroy()
+        {
+            if (GameManager.Instance != null)
+                GameManager.Instance.OnGameStateChanged -= HandleGameStateChanged;
         }
 
         private void Update()
@@ -72,6 +86,26 @@ namespace InfinityRunner.Systems
 
             CurrentScore = distanceScore + coinScore;
             OnScoreChanged?.Invoke(CurrentScore, CoinsCollected, DistanceTravelled);
+        }
+
+        private void HandleGameStateChanged(GameState state)
+        {
+            if (state != GameState.GameOver)
+                return;
+
+            SaveBestScoreIfNeeded();
+        }
+
+        private void SaveBestScoreIfNeeded()
+        {
+            if (CurrentScore <= BestScore)
+                return;
+
+            BestScore = CurrentScore;
+            PlayerPrefs.SetInt(BestScoreKey, BestScore);
+            PlayerPrefs.Save();
+
+            OnBestScoreChanged?.Invoke(BestScore);
         }
     }
 }

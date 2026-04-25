@@ -12,7 +12,6 @@ namespace InfinityRunner.Obstacles
         {
             if (_hasBeenHit || player == null)
                 return;
-
             _hasBeenHit = true;
 
             if (instantKill)
