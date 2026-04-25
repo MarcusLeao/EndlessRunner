@@ -1,16 +1,42 @@
 using UnityEngine;
+using InfinityRunner.Core;
+using InfinityRunner.Obstacles;
+using InfinityRunner.Collectibles;
 
-public class PlayerCollision : MonoBehaviour
+namespace InfinityRunner.Character
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class PlayerCollision : MonoBehaviour
     {
-        
-    }
+        [SerializeField] private PlayerMovement movement;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void Reset()
+        {
+            movement = GetComponent<PlayerMovement>();
+        }
+
+        private void Awake()
+        {
+            if (movement == null)
+                movement = GetComponent<PlayerMovement>();
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (GameManager.Instance == null || !GameManager.Instance.IsPlaying)
+                return;
+
+            Obstacle obstacle = other.GetComponent<Obstacle>() ?? other.GetComponentInParent<Obstacle>();
+            if (obstacle != null)
+            {
+                obstacle.Hit(movement);
+                return;
+            }
+
+            Collectible collectible = other.GetComponent<Collectible>() ?? other.GetComponentInParent<Collectible>();
+            if (collectible != null)
+            {
+                collectible.Collect(movement);
+            }
+        }
     }
 }

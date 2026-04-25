@@ -1,16 +1,15 @@
 using UnityEngine;
+using InfinityRunner.Systems;
 
-public class CoinCollectible : MonoBehaviour
+namespace InfinityRunner.Collectibles
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class CoinCollectible : Collectible
     {
-        
-    }
+        [SerializeField] private int coinValue = 1;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        protected override void OnCollected(Character.PlayerMovement player)
+        {
+            ScoreManager.Instance?.AddCoins(coinValue);
+        }
     }
 }

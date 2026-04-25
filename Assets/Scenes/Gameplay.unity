@@ -315,6 +315,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7611279668317142017, guid: 8f33fa1df028fd648938287d56e56ece, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -368,10 +372,25 @@ MonoBehaviour:
   initialAttachPoint: {fileID: 958205037}
   tilePrefabs:
   - {fileID: 7523610239763348421, guid: 0e06ae30e16197241b91a0dbe95f78c2, type: 3}
+  - {fileID: 4869489662280389576, guid: 50a7f1ec6c9c33b47b01b79396dc1f5f, type: 3}
+  - {fileID: 7718717717406453623, guid: 5b2ff2c1576a06743afd8924ad7608b7, type: 3}
+  - {fileID: 7747104161063126094, guid: 4e74d063affbd964ba1ff1df2ef27f69, type: 3}
+  - {fileID: 4406536283947470856, guid: fd605a0dd01ce2546afdd4088ce69e45, type: 3}
+  obstaclePrefabs:
+  - {fileID: 910884250534589016, guid: 3b5f432e04c612c4bbe40412485b8416, type: 3}
+  - {fileID: -5836483601171852737, guid: b8a119cfdb90dc249b48b1b3ed4391af, type: 3}
+  - {fileID: 1749330302603508160, guid: 06206822c74eeb7419b7b789ba3efd89, type: 3}
+  collectiblePrefabs:
+  - {fileID: 5638080702486501825, guid: dc6925ee673216f44bf3a44168dbce05, type: 3}
   initialTileCount: 6
   minDistanceAhead: 60
   despawnDistanceBehindPlayer: 30
-  randomizeTiles: 0
+  safeStartTileCount: 2
+  obstacleChancePerSocket: 0.35
+  collectibleChancePerSocket: 0.6
+  maxSpawnPerFrame: 5
+  stopSpawnerOnInvalidTile: 1
+  randomizeTiles: 1
   avoidImmediateRepeat: 1
 --- !u!1 &243015475
 GameObject:
@@ -1164,6 +1183,52 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536231411}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &588593620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 588593621}
+  - component: {fileID: 588593622}
+  m_Layer: 0
+  m_Name: ScoreManaget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &588593621
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588593620}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 744255130}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &588593622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588593620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67eb6e761925e5d49a2acf19aa754559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InfinityRunner.Systems.ScoreManager
+  player: {fileID: 1045925385}
+  config: {fileID: 11400000, guid: 4bb05fbc3d96f1c4d8b2ff83c8547058, type: 2}
 --- !u!1 &621100459
 GameObject:
   m_ObjectHideFlags: 0
@@ -1342,6 +1407,7 @@ Transform:
   - {fileID: 2029430732}
   - {fileID: 71705728}
   - {fileID: 2056568106}
+  - {fileID: 588593621}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &835138635
@@ -3128,7 +3194,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1958989909
 Transform:
   m_ObjectHideFlags: 0

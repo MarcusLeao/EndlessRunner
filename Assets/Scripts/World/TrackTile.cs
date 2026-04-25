@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,9 +10,12 @@ namespace InfinityRunner.World
         [SerializeField] private Transform startPoint;
         [SerializeField] private Transform endPoint;
 
-        [Header("Spawn Sockets")]
-        [SerializeField] private Transform[] obstacleSockets;
-        [SerializeField] private Transform[] collectibleSockets;
+        [Header("Socket Roots")]
+        [SerializeField] private Transform obstacleSocketRoot;
+        [SerializeField] private Transform collectibleSocketRoot;
+
+        [SerializeField, HideInInspector] private Transform[] obstacleSockets = Array.Empty<Transform>();
+        [SerializeField, HideInInspector] private Transform[] collectibleSockets = Array.Empty<Transform>();
 
         public Transform StartPoint => startPoint;
         public Transform EndPoint => endPoint;
@@ -29,12 +33,44 @@ namespace InfinityRunner.World
             }
         }
 
+        private void Awake()
+        {
+            RefreshSockets();
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            RefreshSockets();
+        }
+#endif
+
         public bool IsValid()
         {
-            if (startPoint == null || endPoint == null)
+            if (startPoint == null)
+            {
+                Debug.LogError($"[{name}] StartPoint não foi atribuído.");
                 return false;
+            }
 
-            return LocalLengthZ > 0.01f;
+            if (endPoint == null)
+            {
+                Debug.LogError($"[{name}] EndPoint não foi atribuído.");
+                return false;
+            }
+
+            if (LocalLengthZ <= 0.01f)
+            {
+                Debug.LogError(
+                    $"[{name}] Tile inválido. " +
+                    $"StartPoint localPosition: {startPoint.localPosition} | " +
+                    $"EndPoint localPosition: {endPoint.localPosition} | " +
+                    $"LocalLengthZ: {LocalLengthZ}"
+                );
+                return false;
+            }
+
+            return true;
         }
 
         public void AlignTo(Transform attachPoint)
@@ -56,6 +92,26 @@ namespace InfinityRunner.World
             transform.position = attachPoint.position - (desiredRootRotation * startPoint.localPosition);
         }
 
+        private void RefreshSockets()
+        {
+            obstacleSockets = GetDirectChildren(obstacleSocketRoot);
+            collectibleSockets = GetDirectChildren(collectibleSocketRoot);
+        }
+
+        private Transform[] GetDirectChildren(Transform root)
+        {
+            if (root == null)
+                return Array.Empty<Transform>();
+
+            int count = root.childCount;
+            Transform[] result = new Transform[count];
+
+            for (int i = 0; i < count; i++)
+                result[i] = root.GetChild(i);
+
+            return result;
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -69,6 +125,26 @@ namespace InfinityRunner.World
             {
                 Gizmos.color = Color.blue;
                 Gizmos.DrawSphere(endPoint.position, 0.2f);
+            }
+
+            if (obstacleSockets != null)
+            {
+                Gizmos.color = Color.red;
+                foreach (var socket in obstacleSockets)
+                {
+                    if (socket != null)
+                        Gizmos.DrawCube(socket.position, Vector3.one * 0.2f);
+                }
+            }
+
+            if (collectibleSockets != null)
+            {
+                Gizmos.color = Color.yellow;
+                foreach (var socket in collectibleSockets)
+                {
+                    if (socket != null)
+                        Gizmos.DrawSphere(socket.position, 0.15f);
+                }
             }
         }
 #endif

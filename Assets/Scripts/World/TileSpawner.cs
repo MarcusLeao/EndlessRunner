@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using InfinityRunner.Core;
+using InfinityRunner.Obstacles;
+using InfinityRunner.Collectibles;
 
 namespace InfinityRunner.World
 {
@@ -13,10 +15,19 @@ namespace InfinityRunner.World
         [Header("Tile Prefabs")]
         [SerializeField] private List<TrackTile> tilePrefabs = new();
 
+        [Header("Content Prefabs")]
+        [SerializeField] private List<Obstacle> obstaclePrefabs = new();
+        [SerializeField] private List<Collectible> collectiblePrefabs = new();
+
         [Header("Spawn Settings")]
         [SerializeField] private int initialTileCount = 6;
         [SerializeField] private float minDistanceAhead = 60f;
         [SerializeField] private float despawnDistanceBehindPlayer = 30f;
+
+        [Header("Content Spawn")]
+        [SerializeField] private int safeStartTileCount = 2;
+        [SerializeField, Range(0f, 1f)] private float obstacleChancePerSocket = 0.35f;
+        [SerializeField, Range(0f, 1f)] private float collectibleChancePerSocket = 0.6f;
 
         [Header("Safety")]
         [SerializeField] private int maxSpawnPerFrame = 5;
@@ -31,6 +42,7 @@ namespace InfinityRunner.World
         private Transform _nextAttachPoint;
         private TrackTile _lastSpawnedTile;
         private int _lastPrefabIndex = -1;
+        private int _spawnedTileCount;
         private bool _initialized;
 
         private void Start()
@@ -86,7 +98,7 @@ namespace InfinityRunner.World
 
                 if (!tilePrefabs[i].IsValid())
                 {
-                    Debug.LogError($"TileSpawner: Tile prefab '{tilePrefabs[i].name}' está inválido. Verifique StartPoint e EndPoint.");
+                    Debug.LogError($"TileSpawner: Tile prefab '{tilePrefabs[i].name}' está inválido.");
                     enabled = false;
                     return;
                 }
@@ -127,7 +139,7 @@ namespace InfinityRunner.World
 
                 if (newAttachZ <= previousAttachZ + 0.001f)
                 {
-                    Debug.LogError("TileSpawner: O novo tile não avançou o attach point. Verifique StartPoint/EndPoint do prefab.");
+                    Debug.LogError("TileSpawner: O novo tile não avançou o attach point.");
                     if (stopSpawnerOnInvalidTile)
                         enabled = false;
                     return;
@@ -137,7 +149,7 @@ namespace InfinityRunner.World
 
                 if (spawnCountThisFrame >= maxSpawnPerFrame)
                 {
-                    Debug.LogWarning("TileSpawner: limite de spawn por frame atingido. Ajuste minDistanceAhead ou os prefabs.");
+                    Debug.LogWarning("TileSpawner: limite de spawn por frame atingido.");
                     break;
                 }
             }
@@ -179,34 +191,56 @@ namespace InfinityRunner.World
             int prefabIndex = GetNextPrefabIndex();
             TrackTile prefab = tilePrefabs[prefabIndex];
 
-            if (prefab == null)
+            if (prefab == null || !prefab.IsValid())
             {
-                Debug.LogError($"TileSpawner: prefab nulo no índice {prefabIndex}.");
-                return false;
-            }
-
-            if (!prefab.IsValid())
-            {
-                Debug.LogError($"TileSpawner: prefab '{prefab.name}' inválido.");
+                Debug.LogError("TileSpawner: prefab inválido.");
                 return false;
             }
 
             TrackTile spawnedTile = Instantiate(prefab, transform);
             spawnedTile.AlignTo(_nextAttachPoint);
 
-            if (!spawnedTile.IsValid())
-            {
-                Debug.LogError($"TileSpawner: tile instanciado '{spawnedTile.name}' inválido.");
-                Destroy(spawnedTile.gameObject);
-                return false;
-            }
-
             _activeTiles.Enqueue(spawnedTile);
             _lastSpawnedTile = spawnedTile;
             _nextAttachPoint = spawnedTile.EndPoint;
             _lastPrefabIndex = prefabIndex;
 
+            bool shouldPopulateContent = _spawnedTileCount >= safeStartTileCount;
+            if (shouldPopulateContent)
+                PopulateTile(spawnedTile);
+
+            _spawnedTileCount++;
             return true;
+        }
+
+        private void PopulateTile(TrackTile tile)
+        {
+            if (tile == null)
+                return;
+
+            foreach (Transform socket in tile.ObstacleSockets)
+            {
+                if (socket == null) continue;
+                if (Random.value > obstacleChancePerSocket) continue;
+                if (obstaclePrefabs == null || obstaclePrefabs.Count == 0) break;
+
+                Obstacle prefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Count)];
+                if (prefab == null) continue;
+
+                Instantiate(prefab, socket.position, socket.rotation, tile.transform);
+            }
+
+            foreach (Transform socket in tile.CollectibleSockets)
+            {
+                if (socket == null) continue;
+                if (Random.value > collectibleChancePerSocket) continue;
+                if (collectiblePrefabs == null || collectiblePrefabs.Count == 0) break;
+
+                Collectible prefab = collectiblePrefabs[Random.Range(0, collectiblePrefabs.Count)];
+                if (prefab == null) continue;
+
+                Instantiate(prefab, socket.position, socket.rotation, tile.transform);
+            }
         }
 
         private int GetNextPrefabIndex()
@@ -251,6 +285,7 @@ namespace InfinityRunner.World
 
             _lastSpawnedTile = null;
             _lastPrefabIndex = -1;
+            _spawnedTileCount = 0;
             _initialized = false;
         }
     }

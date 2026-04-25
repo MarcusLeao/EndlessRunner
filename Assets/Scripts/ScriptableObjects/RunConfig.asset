@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63a6cad4fea61b941b60a1dc529f88c4, type: 3}
   m_Name: RunConfig
   m_EditorClassIdentifier: Assembly-CSharp::InfinityRunner.Data.RunConfig
+  scorePerMeter: 1
+  scorePerCoin: 5
   startForwardSpeed: 8
   maxForwardSpeed: 30
   forwardAcceleration: 0.2
   laneOffset: 4
   laneChangeSpeed: 14
-  jumpForce: 20
+  jumpForce: 15
   gravity: 30
   slideDuration: 0.75
   slideControllerHeight: 1

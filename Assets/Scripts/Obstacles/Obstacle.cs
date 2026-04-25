@@ -1,16 +1,24 @@
 using UnityEngine;
 
-public class Obstacle : MonoBehaviour
+namespace InfinityRunner.Obstacles
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class Obstacle : MonoBehaviour
     {
-        
-    }
+        [SerializeField] private bool instantKill = true;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private bool _hasBeenHit;
+
+        public void Hit(Character.PlayerMovement player)
+        {
+            if (_hasBeenHit || player == null)
+                return;
+
+            _hasBeenHit = true;
+
+            if (instantKill)
+            {
+                player.Kill();
+            }
+        }
     }
 }
