@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using InfinityRunner.Core;
@@ -6,6 +7,21 @@ using InfinityRunner.Collectibles;
 
 namespace InfinityRunner.World
 {
+    public enum ObstacleRoute
+    {
+        Left,
+        Center,
+        Right
+    }
+
+    [Serializable]
+    public class ObstacleRoutePool
+    {
+        public ObstacleRoute route;
+        [Range(0f, 1f)] public float chancePerSocket = 0.35f;
+        public List<Obstacle> obstaclePrefabs = new();
+    }
+
     public class TileSpawner : MonoBehaviour
     {
         [Header("References")]
@@ -15,8 +31,10 @@ namespace InfinityRunner.World
         [Header("Tile Prefabs")]
         [SerializeField] private List<TrackTile> tilePrefabs = new();
 
-        [Header("Content Prefabs")]
-        [SerializeField] private List<Obstacle> obstaclePrefabs = new();
+        [Header("Obstacle Pools By Route")]
+        [SerializeField] private List<ObstacleRoutePool> obstaclePoolsByRoute = new();
+
+        [Header("Collectible Prefabs")]
         [SerializeField] private List<Collectible> collectiblePrefabs = new();
 
         [Header("Spawn Settings")]
@@ -26,7 +44,6 @@ namespace InfinityRunner.World
 
         [Header("Content Spawn")]
         [SerializeField] private int safeStartTileCount = 2;
-        [SerializeField, Range(0f, 1f)] private float obstacleChancePerSocket = 0.35f;
         [SerializeField, Range(0f, 1f)] private float collectibleChancePerSocket = 0.6f;
 
         [Header("Safety")]
@@ -218,29 +235,117 @@ namespace InfinityRunner.World
             if (tile == null)
                 return;
 
+            PopulateObstacles(tile);
+            PopulateCollectibles(tile);
+        }
+
+        private void PopulateObstacles(TrackTile tile)
+        {
             foreach (Transform socket in tile.ObstacleSockets)
             {
-                if (socket == null) continue;
-                if (Random.value > obstacleChancePerSocket) continue;
-                if (obstaclePrefabs == null || obstaclePrefabs.Count == 0) break;
+                if (socket == null)
+                    continue;
 
-                Obstacle prefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Count)];
-                if (prefab == null) continue;
+                ObstacleRoute route = ResolveObstacleRoute(socket);
+                ObstacleRoutePool pool = GetObstaclePool(route);
+
+                if (pool == null)
+                    continue;
+
+                if (pool.obstaclePrefabs == null || pool.obstaclePrefabs.Count == 0)
+                    continue;
+
+                if (UnityEngine.Random.value > pool.chancePerSocket)
+                    continue;
+
+                Obstacle prefab = GetRandomObstacle(pool.obstaclePrefabs);
+                if (prefab == null)
+                    continue;
 
                 Instantiate(prefab, socket.position, socket.rotation, tile.transform);
             }
+        }
 
+        private void PopulateCollectibles(TrackTile tile)
+        {
             foreach (Transform socket in tile.CollectibleSockets)
             {
-                if (socket == null) continue;
-                if (Random.value > collectibleChancePerSocket) continue;
-                if (collectiblePrefabs == null || collectiblePrefabs.Count == 0) break;
+                if (socket == null)
+                    continue;
 
-                Collectible prefab = collectiblePrefabs[Random.Range(0, collectiblePrefabs.Count)];
-                if (prefab == null) continue;
+                if (UnityEngine.Random.value > collectibleChancePerSocket)
+                    continue;
+
+                if (collectiblePrefabs == null || collectiblePrefabs.Count == 0)
+                    continue;
+
+                Collectible prefab = collectiblePrefabs[UnityEngine.Random.Range(0, collectiblePrefabs.Count)];
+                if (prefab == null)
+                    continue;
 
                 Instantiate(prefab, socket.position, socket.rotation, tile.transform);
             }
+        }
+
+        private ObstacleRoutePool GetObstaclePool(ObstacleRoute route)
+        {
+            if (obstaclePoolsByRoute == null || obstaclePoolsByRoute.Count == 0)
+                return null;
+
+            for (int i = 0; i < obstaclePoolsByRoute.Count; i++)
+            {
+                if (obstaclePoolsByRoute[i] != null && obstaclePoolsByRoute[i].route == route)
+                    return obstaclePoolsByRoute[i];
+            }
+
+            return null;
+        }
+
+        private Obstacle GetRandomObstacle(List<Obstacle> prefabs)
+        {
+            if (prefabs == null || prefabs.Count == 0)
+                return null;
+
+            List<Obstacle> validPrefabs = new();
+
+            for (int i = 0; i < prefabs.Count; i++)
+            {
+                if (prefabs[i] != null)
+                    validPrefabs.Add(prefabs[i]);
+            }
+
+            if (validPrefabs.Count == 0)
+                return null;
+
+            int index = UnityEngine.Random.Range(0, validPrefabs.Count);
+            return validPrefabs[index];
+        }
+
+        private ObstacleRoute ResolveObstacleRoute(Transform socket)
+        {
+            if (socket == null)
+                return ObstacleRoute.Center;
+
+            string socketName = socket.name.ToLowerInvariant();
+
+            if (socketName.Contains("left") || socketName.Contains("esquerda"))
+                return ObstacleRoute.Left;
+
+            if (socketName.Contains("right") || socketName.Contains("direita"))
+                return ObstacleRoute.Right;
+
+            if (socketName.Contains("center") || socketName.Contains("centre") || socketName.Contains("centro") || socketName.Contains("middle"))
+                return ObstacleRoute.Center;
+
+            float localX = socket.localPosition.x;
+
+            if (localX < -0.1f)
+                return ObstacleRoute.Left;
+
+            if (localX > 0.1f)
+                return ObstacleRoute.Right;
+
+            return ObstacleRoute.Center;
         }
 
         private int GetNextPrefabIndex()
@@ -251,7 +356,7 @@ namespace InfinityRunner.World
             if (!randomizeTiles)
                 return 0;
 
-            int nextIndex = Random.Range(0, tilePrefabs.Count);
+            int nextIndex = UnityEngine.Random.Range(0, tilePrefabs.Count);
 
             if (!avoidImmediateRepeat)
                 return nextIndex;
@@ -259,7 +364,7 @@ namespace InfinityRunner.World
             int safety = 0;
             while (nextIndex == _lastPrefabIndex && safety < 10)
             {
-                nextIndex = Random.Range(0, tilePrefabs.Count);
+                nextIndex = UnityEngine.Random.Range(0, tilePrefabs.Count);
                 safety++;
             }
 

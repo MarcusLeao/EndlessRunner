@@ -64,6 +64,30 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -50877433306207181, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -50877433306207181, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -50877433306207181, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -50877433306207181, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -50877433306207181, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -50877433306207181, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
       propertyPath: m_Name
       value: frevo
@@ -82,15 +106,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5112080552816918700, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -26.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5112080552816918700, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.66
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5112080552816918700, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 25.48
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5112080552816918700, guid: cc2fe0231605fc141bf1027a26a29981, type: 3}
       propertyPath: m_LocalRotation.w
@@ -171,8 +195,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.6940103, y: 3.0667453, z: 1.7817904}
-  m_Center: {x: -0.14038612, y: 0.43771687, z: 0.21301015}
+  m_Size: {x: 2.6246166, y: 1.5851873, z: 1.0255406}
+  m_Center: {x: 0.028041009, y: 0.0022131803, z: -0.066391416}
 --- !u!114 &1749330302603508160
 MonoBehaviour:
   m_ObjectHideFlags: 0
