@@ -526,6 +526,7 @@ MonoBehaviour:
     - {fileID: 3530399537713816497, guid: fcadd207889be524fb9ef1410fccee1c, type: 3}
     - {fileID: 1064228385671151221, guid: 79dab00a1ae5bf74aa31e467817dbb05, type: 3}
     - {fileID: 3021064124745938734, guid: 4365d49a199580245836ec1dbea6cdcf, type: 3}
+    - {fileID: 4111630936286288440, guid: 8e03d83b2c01b5844ae001b791a1edc8, type: 3}
   - route: 1
     chancePerSocket: 1
     obstaclePrefabs:
@@ -536,6 +537,7 @@ MonoBehaviour:
     - {fileID: -5836483601171852737, guid: b8a119cfdb90dc249b48b1b3ed4391af, type: 3}
     - {fileID: 3530399537713816497, guid: fcadd207889be524fb9ef1410fccee1c, type: 3}
     - {fileID: 1064228385671151221, guid: 79dab00a1ae5bf74aa31e467817dbb05, type: 3}
+    - {fileID: 4111630936286288440, guid: 8e03d83b2c01b5844ae001b791a1edc8, type: 3}
   - route: 2
     chancePerSocket: 1
     obstaclePrefabs:
@@ -545,6 +547,7 @@ MonoBehaviour:
     - {fileID: -5836483601171852737, guid: b8a119cfdb90dc249b48b1b3ed4391af, type: 3}
     - {fileID: 3530399537713816497, guid: fcadd207889be524fb9ef1410fccee1c, type: 3}
     - {fileID: 1064228385671151221, guid: 79dab00a1ae5bf74aa31e467817dbb05, type: 3}
+    - {fileID: 4111630936286288440, guid: 8e03d83b2c01b5844ae001b791a1edc8, type: 3}
   collectiblePrefabs:
   - {fileID: 5638080702486501825, guid: dc6925ee673216f44bf3a44168dbce05, type: 3}
   initialTileCount: 6
