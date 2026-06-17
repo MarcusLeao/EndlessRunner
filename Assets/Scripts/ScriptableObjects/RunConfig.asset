@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InfinityRunner.Data.RunConfig
   scorePerMeter: 1
   scorePerCoin: 5
-  startForwardSpeed: 8
-  maxForwardSpeed: 30
-  forwardAcceleration: 0.2
+  startForwardSpeed: 15
+  maxForwardSpeed: 60
+  forwardAcceleration: 0.15
   laneOffset: 4
   laneChangeSpeed: 14
-  jumpForce: 15
-  gravity: 30
+  jumpForce: 20.5
+  gravity: 42.3
   slideDuration: 0.75
   slideControllerHeight: 1
   groundedVerticalForce: 2

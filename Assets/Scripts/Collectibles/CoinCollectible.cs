@@ -1,5 +1,6 @@
 using UnityEngine;
 using InfinityRunner.Systems;
+using InfinityRunner.Core;
 
 namespace InfinityRunner.Collectibles
 {
@@ -9,6 +10,7 @@ namespace InfinityRunner.Collectibles
 
         protected override void OnCollected(Character.PlayerMovement player)
         {
+            AudioManager.Instance?.PlayCoin();
             ScoreManager.Instance?.AddCoins(coinValue);
         }
     }

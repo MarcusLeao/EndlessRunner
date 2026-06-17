@@ -16,6 +16,7 @@ namespace InfinityRunner.Core
         public event Action<GameState> OnGameStateChanged;
 
         [SerializeField] private bool autoStartRun = true;
+        [SerializeField] private string mainMenuSceneName = "Menu";
 
         private void Awake()
         {
@@ -74,6 +75,12 @@ namespace InfinityRunner.Core
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        public void ReturnToMainMenu()
+        {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(mainMenuSceneName);
         }
 
         private void SetState(GameState newState)

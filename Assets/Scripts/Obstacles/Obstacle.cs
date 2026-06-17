@@ -1,4 +1,5 @@
 using UnityEngine;
+using InfinityRunner.Core;
 
 namespace InfinityRunner.Obstacles
 {
@@ -16,6 +17,7 @@ namespace InfinityRunner.Obstacles
 
             if (instantKill)
             {
+                AudioManager.Instance?.PlayCollision();
                 player.Kill();
             }
         }

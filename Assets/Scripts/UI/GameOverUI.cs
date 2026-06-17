@@ -90,7 +90,14 @@ namespace InfinityRunner.UI
 
         public void RestartRun()
         {
+            AudioManager.Instance?.PlayButton();
             GameManager.Instance?.RestartRun();
+        }
+
+        public void ReturnToMainMenu()
+        {
+            AudioManager.Instance?.PlayButton();
+            GameManager.Instance?.ReturnToMainMenu();
         }
     }
 }
