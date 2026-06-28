@@ -105,7 +105,6 @@ namespace InfinityRunner.Character
             if (!characterController.isGrounded) return;
             if (_isSliding) return;
 
-            AudioManager.Instance?.PlaySlide();
             _isSliding = true;
             _slideTimer = config.slideDuration;
 
