@@ -30,6 +30,12 @@ namespace InfinityRunner.Core
             Time.timeScale = 1f;
         }
 
+        private void OnDestroy()
+        {
+            if (Instance == this)
+                Instance = null;
+        }
+
         private void Start()
         {
             if (autoStartRun)

@@ -9,11 +9,13 @@ public class MainMenuController : MonoBehaviour
 
     public void PlayGame()
     {
+        AudioManager.Instance?.PlayButton();
         SceneManager.LoadScene(gameplaySceneName);
     }
 
     public void QuitGame()
     {
+        AudioManager.Instance?.PlayButton();
         Debug.Log("Saindo do jogo...");
 
 #if UNITY_EDITOR

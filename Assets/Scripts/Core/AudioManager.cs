@@ -18,12 +18,14 @@ namespace InfinityRunner.Core
         [SerializeField] private AudioClip coinSfx;
         [SerializeField] private AudioClip gameOverSfx;
         [SerializeField] private AudioClip collisionSfx;
+        [SerializeField] private AudioClip buttonSfx;
         [SerializeField, Range(0f, 1f)] private float sfxVolume = 0.8f;
 
         private AudioSource _musicSource;
         private AudioSource _sfxSource;
         private GameManager _subscribedGameManager;
         private GameState? _lastHandledState;
+        private bool _musicPaused;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
@@ -88,6 +90,8 @@ namespace InfinityRunner.Core
 
         public void PlayCollision() => PlaySfx(collisionSfx);
 
+        public void PlayButton() => PlaySfx(buttonSfx);
+
         private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             RefreshSceneAudio();
@@ -144,10 +148,14 @@ namespace InfinityRunner.Core
                     break;
                 case GameState.Paused:
                     if (_musicSource.isPlaying)
+                    {
                         _musicSource.Pause();
+                        _musicPaused = true;
+                    }
                     break;
                 case GameState.GameOver:
                     _musicSource.Stop();
+                    _musicPaused = false;
                     if (enteredGameOver)
                         PlaySfx(gameOverSfx);
                     break;
@@ -160,6 +168,7 @@ namespace InfinityRunner.Core
             {
                 _musicSource.Stop();
                 _musicSource.clip = null;
+                _musicPaused = false;
                 return;
             }
 
@@ -168,13 +177,21 @@ namespace InfinityRunner.Core
             if (_musicSource.clip == clip)
             {
                 if (!_musicSource.isPlaying)
-                    _musicSource.UnPause();
+                {
+                    if (_musicPaused)
+                        _musicSource.UnPause();
+                    else
+                        _musicSource.Play();
+                }
+
+                _musicPaused = false;
 
                 return;
             }
 
             _musicSource.clip = clip;
             _musicSource.Play();
+            _musicPaused = false;
         }
 
         private void PlaySfx(AudioClip clip)
@@ -193,6 +210,7 @@ namespace InfinityRunner.Core
             coinSfx ??= Resources.Load<AudioClip>("Audio/SFX/Coin");
             gameOverSfx ??= Resources.Load<AudioClip>("Audio/SFX/GameOver");
             collisionSfx ??= Resources.Load<AudioClip>("Audio/SFX/Collision");
+            buttonSfx ??= Resources.Load<AudioClip>("Audio/SFX/Button");
         }
     }
 }

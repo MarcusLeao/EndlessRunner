@@ -50,4 +50,5 @@ MonoBehaviour:
   coinSfx: {fileID: 8300000, guid: 8086bb194b632244da82bb61d0ddb2ed, type: 3}
   gameOverSfx: {fileID: 8300000, guid: 23fe5145c7f4c5843856eee5e47f0dbc, type: 3}
   collisionSfx: {fileID: 8300000, guid: c6cc57b2aef4c0d4db49dcd1d027e7e8, type: 3}
+  buttonSfx: {fileID: 8300000, guid: ad56ec320a607864791a3dcd86d25775, type: 3}
   sfxVolume: 0.8
